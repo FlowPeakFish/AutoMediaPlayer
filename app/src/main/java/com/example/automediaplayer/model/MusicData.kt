@@ -1,5 +1,6 @@
 package com.example.automediaplayer.model
 
+import android.graphics.Bitmap
 import android.net.Uri
 
 data class MusicData(
@@ -9,7 +10,8 @@ data class MusicData(
     val album: String,
     val duration: Long,
     val uri: Uri,
-    val filePath: String
+    val filePath: String,
+    val cover: Bitmap? = null
 ) {
     // 格式化时长显示 (毫秒 -> 分:秒)
     fun getFormattedDuration(): String {

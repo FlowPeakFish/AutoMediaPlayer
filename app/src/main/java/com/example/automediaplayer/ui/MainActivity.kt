@@ -133,6 +133,7 @@ class MainActivity : AppCompatActivity() {
         if (music != null) {
             mBinding.tvTitle.text = music.title
             mBinding.tvArtist.text = music.artist
+            mBinding.imgCover.setImageBitmap(music.cover)
             updatePlayButton()
         } else {
             Log.d(mTag, "No music currently playing")
