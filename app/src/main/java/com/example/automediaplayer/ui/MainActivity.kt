@@ -1,12 +1,15 @@
 package com.example.automediaplayer.ui
 
+import android.Manifest
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.automediaplayer.R
 import com.example.automediaplayer.adapter.MusicAdapter
@@ -27,6 +30,10 @@ class MainActivity : AppCompatActivity() {
     private var currentMusic: MusicData? = null
     private var isPlaying = false
 
+    private lateinit var permissionLauncher: ActivityResultLauncher<String>
+
+    private val requiredAudioPermission: String = Manifest.permission.READ_EXTERNAL_STORAGE
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -34,7 +41,8 @@ class MainActivity : AppCompatActivity() {
 
         initViews()
         setupRecyclerView()
-        loadMusicFiles()
+        setupPermissionLauncher()
+        requestPermissionAndLoad()
     }
 
     private fun initViews() {
@@ -49,6 +57,30 @@ class MainActivity : AppCompatActivity() {
         mBinding.rvMusic.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = musicAdapter
+        }
+    }
+
+    private fun setupPermissionLauncher() {
+        permissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { granted ->
+            if (granted) {
+                loadMusicFiles()
+            } else {
+                Toast.makeText(this, "需要读取媒体库权限才能加载音乐", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun requestPermissionAndLoad() {
+        val granted = ContextCompat.checkSelfPermission(
+            this, requiredAudioPermission
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+
+        if (granted) {
+            loadMusicFiles()
+        } else {
+            permissionLauncher.launch(requiredAudioPermission)
         }
     }
 
@@ -142,9 +174,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun updatePlayButton() {
         if (isPlaying) {
-            mBinding.btnPlayPause.background = AppCompatResources.getDrawable(this, R.drawable.icon_controls_play)
+            mBinding.btnPlayPause.background =
+                AppCompatResources.getDrawable(this, R.drawable.icon_controls_play)
         } else {
-            mBinding.btnPlayPause.background = AppCompatResources.getDrawable(this, R.drawable.icon_controls_pause)
+            mBinding.btnPlayPause.background =
+                AppCompatResources.getDrawable(this, R.drawable.icon_controls_pause)
         }
     }
 
