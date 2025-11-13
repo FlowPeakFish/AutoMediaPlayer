@@ -1,0 +1,48 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam component {
+  BorderColor #4B7BEC
+  FontColor #0F1E3D
+}
+skinparam note {
+  BackgroundColor #F7F9FC
+  BorderColor #B5C7E3
+}
+
+' 组件定义
+component "UI\nMainActivity" as MainActivity
+component "Adapter\nMusicAdapter" as MusicAdapter
+component "Service\nMusicPlayService" as MusicPlayService
+component "Manager\nPlayListManager" as PlayListManager
+component "Helper\nServiceConnectionHelper" as ServiceConnectionHelper
+component "Listener\nPlaybackStateListener" as PlaybackStateListener
+component "Util\nMusicScanner" as MusicScanner
+component "Android API\nMediaPlayer" as MediaPlayer
+component "Android API\nContentResolver" as ContentResolver
+
+' 关系
+MainActivity --> MusicAdapter : 展示列表/处理点击
+MainActivity --> ServiceConnectionHelper : 绑定/解绑 Service
+ServiceConnectionHelper --> MusicPlayService : bindService/startService
+MainActivity --> MusicPlayService : 通过 Binder 调用播放接口
+MusicPlayService --> PlayListManager : 管理播放队列
+MusicPlayService --> MediaPlayer : 控制实际播放
+MusicPlayService --> PlaybackStateListener : 推送状态回调
+MainActivity --> PlaybackStateListener : 注册/实现回调
+MainActivity --> MusicScanner : 协程扫描本地歌曲
+MusicScanner --> ContentResolver : query(MediaStore)
+
+' 额外说明
+note right of MusicPlayService
+  - 前台服务，维护进度/模式
+  - 暴露播放控制、进度、模式接口
+end note
+
+note bottom of MainActivity
+  - 负责 UI & 权限
+  - 通过监听器更新控件
+end note
+
+@enduml

@@ -9,8 +9,9 @@ android {
 
     defaultConfig {
         applicationId = "com.example.automediaplayer"
-        minSdk = 31
-        targetSdk = 36
+        minSdk = 30
+        // noinspection ExpiredTargetSdkVersion
+        targetSdk = 32
         versionCode = 1
         versionName = "1.0"
 

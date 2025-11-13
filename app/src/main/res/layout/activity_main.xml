@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
@@ -43,6 +42,27 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
+
+        <TextView
+            android:id="@+id/tv_progress_max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="15dp"
+            android:text="00:00"
+            android:textColor="#A9B3C1"
+            app:layout_constraintBottom_toTopOf="@id/player_progress_bar"
+            app:layout_constraintEnd_toEndOf="@id/player_progress_bar" />
+
+        <TextView
+            android:id="@+id/tv_progress_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="15dp"
+            android:text="00:00"
+            android:textColor="#A9B3C1"
+            app:layout_constraintBottom_toTopOf="@id/player_progress_bar"
+            app:layout_constraintStart_toStartOf="@id/player_progress_bar" />
+
         <ImageView
             android:id="@+id/img_cover"
             android:layout_width="240dp"
@@ -52,11 +72,36 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_artist" />
 
+        <SeekBar
+            android:id="@+id/player_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="17dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:progress="0"
+            android:thumb="@android:color/transparent"
+            app:layout_constraintBottom_toTopOf="@+id/ly_controls"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ly_controls"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageButton
+                android:id="@+id/btn_mode"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/icon_controls_order"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/btn_prev" />
 
             <ImageButton
                 android:id="@+id/btn_prev"
@@ -64,8 +109,8 @@
                 android:layout_height="40dp"
                 android:background="@drawable/icon_controls_previous"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/btn_play_pause"/>
+                app:layout_constraintLeft_toRightOf="@+id/btn_mode"
+                app:layout_constraintRight_toLeftOf="@+id/btn_play_pause" />
 
             <ImageButton
                 android:id="@+id/btn_play_pause"
@@ -95,17 +140,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="歌曲列表"
+        app:layout_constraintBottom_toTopOf="@id/rv_music"
         app:layout_constraintStart_toEndOf="@id/ly_current_playing"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/rv_music"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_music"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.97"
         app:layout_constraintStart_toEndOf="@+id/ly_current_playing"
-        app:layout_constraintTop_toBottomOf="@id/tv_music_list"
-        app:layout_constraintHeight_percent="0.97"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_music_list" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

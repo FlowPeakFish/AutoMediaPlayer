@@ -1,0 +1,51 @@
+@startuml
+skinparam sequenceArrowThickness 1.2
+skinparam sequenceParticipant {
+  BackgroundColor #FFFFFF
+  BorderColor #4B7BEC
+}
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+
+actor User
+participant "UI\nMainActivity" as MainActivity
+participant "Helper\nServiceConnectionHelper" as Helper
+participant "Service\nMusicPlayService" as Service
+participant "Manager\nPlayListManager" as Manager
+participant "Android API\nMediaPlayer" as Player
+
+== 启动与绑定 ==
+User -> MainActivity : 打开应用
+MainActivity -> Helper : bindService()
+Helper -> Service : bindService/startService
+Service --> Helper : onServiceConnected()
+Helper --> MainActivity : 传回 Binder
+MainActivity -> Service : addPlaybackListener()
+
+== 扫描与列表 ==
+MainActivity -> MainActivity : 协程调用 MusicScanner.scan()
+MainActivity -> MainActivity : 更新 RecyclerView
+
+== 点击播放 ==
+User -> MainActivity : 点击歌曲项
+MainActivity -> Service : initPlaylist(list, id)
+Service -> Manager : setPlaylist()
+Service -> Service : playMusicAt(position)
+Service -> Player : reset()/setDataSource()/prepareAsync()
+Player --> Service : onPrepared()
+Service -> Player : start()
+Service -> MainActivity : onPlaybackStateChanged()
+Service -> MainActivity : onMusicChanged()
+
+== 进度循环 ==
+loop 每秒
+    Service -> Player : currentPosition/duration
+    Service -> MainActivity : onPlaybackProgressChanged()
+end
+
+== 完成/下一首 ==
+Player -> Service : onCompletion()
+Service -> Manager : moveToNext()
+Service -> Service : playMusicAt(next)
+
+@enduml
